@@ -2,22 +2,23 @@ package com.maxime.mavenpoc;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.ListFragment;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class MainActivity extends FragmentActivity {
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+
+public class MainActivity extends SherlockFragmentActivity {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -53,7 +54,9 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_main, menu);
+		MenuInflater menuInflater = getSupportMenuInflater();
+		menuInflater.inflate(R.menu.activity_main, menu);
+		
 		return true;
 	}
 
@@ -103,7 +106,7 @@ public class MainActivity extends FragmentActivity {
 	 * A dummy fragment representing a section of the app, but that simply
 	 * displays dummy text.
 	 */
-	public static class DummySectionFragment extends Fragment {
+	public static class DummySectionFragment extends SherlockFragment {
 		/**
 		 * The fragment argument representing the section number for this
 		 * fragment.
@@ -126,12 +129,14 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
-	public static class FlowReaderSectionFragment extends ListFragment {
+	public static class FlowReaderSectionFragment extends SherlockListFragment {
 
 		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
+			//TODO : setListAdapter(new MyListAdapter());
+			
 			return super.onCreateView(inflater, container, savedInstanceState);
 		}
 
@@ -143,5 +148,6 @@ public class MainActivity extends FragmentActivity {
 		}
 		
 	}
+	
 
 }
