@@ -1,14 +1,23 @@
 package com.maxime.mavenpoc;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.service.RepositoryService;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -39,6 +48,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		getSherlock().getActionBar().setDisplayShowTitleEnabled(false);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -75,11 +85,26 @@ public class MainActivity extends SherlockFragmentActivity {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
-			Fragment fragment = new DummySectionFragment();
-			Bundle args = new Bundle();
-			args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
-			fragment.setArguments(args);
-			return fragment;
+			switch (position) {
+			case 0:
+				Fragment fragment0 = new DummySectionFragment();
+				Bundle args0 = new Bundle();
+				args0.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment0.setArguments(args0);
+				return fragment0;
+			case 1:
+				Fragment fragment1 = new FlowReaderSectionFragment();
+				return fragment1;
+			case 2:
+				Fragment fragment2 = new DummySectionFragment();
+				Bundle args2 = new Bundle();
+				args2.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment2.setArguments(args2);
+				return fragment2;
+
+			default:
+				return null;
+			}
 		}
 
 		@Override
@@ -131,16 +156,35 @@ public class MainActivity extends SherlockFragmentActivity {
 	
 	public static class FlowReaderSectionFragment extends SherlockListFragment {
 
+		private static final String GIT_URL = "";
 		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 			//TODO : setListAdapter(new MyListAdapter());
+			String[] listString = {"Coucou","Moi","C'est","Maxime","Dugué"};
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(getSherlockActivity(), android.R.layout.simple_list_item_1, getFlow());
+			setListAdapter(adapter);
 			
 			return super.onCreateView(inflater, container, savedInstanceState);
 		}
 
 		
+		private List<String> getFlow() {
+			List<String> flowList = new ArrayList<String>();
+			RepositoryService service = new RepositoryService();
+			try {
+				for(Repository repo : service.getRepositories("AerandirSurion")){
+					flowList.add(repo.getName());
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				Log.e("getFlow", "error while accessing github account");
+			}
+			return flowList;
+		}
+
+
 		@Override
 		public void onListItemClick(ListView l, View v, int position, long id) {
 			// TODO Auto-generated method stub
@@ -148,6 +192,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		}
 		
 	}
+	
 	
 
 }
