@@ -7,6 +7,7 @@ import java.util.List;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -163,27 +164,52 @@ public class MainActivity extends SherlockFragmentActivity {
 				Bundle savedInstanceState) {
 			//TODO : setListAdapter(new MyListAdapter());
 			String[] listString = {"Coucou","Moi","C'est","Maxime","Dugué"};
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(getSherlockActivity(), android.R.layout.simple_list_item_1, getFlow());
-			setListAdapter(adapter);
-			
+//			ArrayAdapter<String> adapter = new ArrayAdapter<String>(getSherlockActivity(), android.R.layout.simple_list_item_1, new DownloadGitHubData().execute());
+//			setListAdapter(adapter);
+			new DownloadGitHubData().execute();
 			return super.onCreateView(inflater, container, savedInstanceState);
 		}
 
 		
-		private List<String> getFlow() {
-			List<String> flowList = new ArrayList<String>();
-			RepositoryService service = new RepositoryService();
-			try {
-				for(Repository repo : service.getRepositories("AerandirSurion")){
-					flowList.add(repo.getName());
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				Log.e("getFlow", "error while accessing github account");
-			}
-			return flowList;
-		}
+//		private List<String> getFlow() {
+//			List<String> flowList = new ArrayList<String>();
+//			RepositoryService service = new RepositoryService();
+//			try {
+//				for(Repository repo : service.getRepositories("AerandirSurion")){
+//					flowList.add(repo.getName());
+//				}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//				Log.e("getFlow", "error while accessing github account");
+//			}
+//			return flowList;
+//		}
 
+		
+		private class DownloadGitHubData extends AsyncTask<Void, Void, List<String>>{
+
+			@Override
+			protected List<String> doInBackground(Void... params) {
+				List<String> flowList = new ArrayList<String>();
+				RepositoryService service = new RepositoryService();
+				try {
+					for(Repository repo : service.getRepositories("AerandirSurion")){
+						flowList.add(repo.getName());
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+					Log.e("getFlow", "error while accessing github account");
+				}
+				return flowList;
+			}
+			
+			@Override
+			protected void onPostExecute(List<String> result){
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getSherlockActivity(), android.R.layout.simple_list_item_1, result);
+				setListAdapter(adapter);
+			}
+			
+		}
 
 		@Override
 		public void onListItemClick(ListView l, View v, int position, long id) {
@@ -192,6 +218,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		}
 		
 	}
+	
 	
 	
 
